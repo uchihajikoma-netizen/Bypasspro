@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b14">
+  <meta name="description" content="Phân tích URL rút gọn, kiểm tra tên miền và mở trang xác minh trong trình duyệt.">
+  <title>LinkScope — Short Link Analyzer</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="LinkScope trang chủ">
+      <span class="brand-mark">↗</span><span>LINK<span class="accent">SCOPE</span></span>
+    </a>
+    <div class="top-actions"><span class="status-dot"></span><span>URL ANALYZER</span><button id="themeHint" class="icon-button" title="Thông tin">ⓘ</button></div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow"><span class="eyebrow-line"></span> SHORT LINK INTELLIGENCE</div>
+      <h1>Nhìn rõ phía sau<br><span class="gradient-text">một đường link.</span></h1>
+      <p class="hero-copy">Kiểm tra cấu trúc URL, xem thông tin tên miền và mở trang đích trong trình duyệt để tự hoàn tất các bước xác minh mà dịch vụ yêu cầu.</p>
+    </section>
+
+    <section class="panel input-panel" aria-labelledby="analyzeTitle">
+      <div class="panel-heading">
+        <div><div class="section-kicker">01 / INPUT</div><h2 id="analyzeTitle">Phân tích đường dẫn</h2></div>
+        <span class="pill"><span class="pill-dot"></span> CLIENT-SIDE</span>
+      </div>
+      <label for="urlInput" class="field-label">URL cần kiểm tra</label>
+      <div class="input-wrap"><span class="input-symbol">⌁</span><input id="urlInput" type="url" inputmode="url" autocomplete="url" placeholder="https://link4m.com/your-link" spellcheck="false"><button id="pasteBtn" class="secondary-button">DÁN</button></div>
+      <div class="input-foot"><span>Chấp nhận URL http:// hoặc https://</span><span id="charCount">0 ký tự</span></div>
+      <div class="button-row"><button id="analyzeBtn" class="primary-button"><span>⌕</span> Phân tích URL <span class="button-arrow">↗</span></button><button id="clearBtn" class="secondary-button">XÓA</button></div>
+      <p class="privacy-note"><span>◈</span> URL được phân tích ngay trên thiết bị. Không có dịch vụ backend trong phiên bản GitHub Pages này.</p>
+      <div id="errorBox" class="message error-message" role="alert" hidden></div>
+    </section>
+
+    <section id="results" class="panel results-panel" hidden aria-live="polite">
+      <div class="panel-heading"><div><div class="section-kicker">02 / REPORT</div><h2>Kết quả phân tích</h2></div><span id="validBadge" class="result-badge">URL VALID</span></div>
+      <div class="domain-card"><div class="domain-icon">◎</div><div class="domain-info"><span class="muted-label">TÊN MIỀN</span><strong id="hostResult">—</strong><span id="protocolResult" class="small-muted">—</span></div><div id="secureTag" class="security-tag">—</div></div>
+      <div class="detail-grid">
+        <div class="detail-cell"><span class="muted-label">GIAO THỨC</span><strong id="schemeResult">—</strong></div>
+        <div class="detail-cell"><span class="muted-label">ĐỘ DÀI URL</span><strong id="lengthResult">—</strong></div>
+        <div class="detail-cell"><span class="muted-label">THAM SỐ</span><strong id="paramsResult">—</strong></div>
+      </div>
+      <div class="notice"><span class="notice-icon">i</span><p><strong>Chưa xác minh đích đến.</strong> URL hợp lệ về cú pháp không đồng nghĩa với việc an toàn. GitHub Pages không thể đọc chuỗi chuyển hướng của mọi website do giới hạn trình duyệt (CORS).</p></div>
+      <div class="button-row result-actions"><button id="openBtn" class="primary-button">Mở link trong tab mới <span class="button-arrow">↗</span></button><button id="copyBtn" class="secondary-button">Sao chép URL</button></div>
+      <p class="small-muted">Nếu trang mở ra yêu cầu CAPTCHA, hãy tự xác minh trực tiếp tại trang đó. Công cụ không tự giải hoặc bỏ qua CAPTCHA.</p>
+    </section>
+
+    <section class="panel tips-panel">
+      <div class="panel-heading"><div><div class="section-kicker">03 / QUICK CHECKS</div><h2>Kiểm tra an toàn cơ bản</h2></div><span class="outline-icon">⌘</span></div>
+      <div class="checks-list" id="checksList"><div class="check-row"><span class="check-icon">✓</span><div><strong>Kiểm tra cú pháp URL</strong><p>Phát hiện URL thiếu giao thức hoặc không hợp lệ.</p></div><span class="check-state">SẴN SÀNG</span></div><div class="check-row"><span class="check-icon">✓</span><div><strong>Hiển thị hostname</strong><p>Giúp nhận diện tên miền trước khi mở liên kết.</p></div><span class="check-state">SẴN SÀNG</span></div><div class="check-row"><span class="check-icon warn">!</span><div><strong>Không tự động vượt xác minh</strong><p>CAPTCHA và bước chống bot vẫn do người dùng thực hiện.</p></div><span class="check-state">AN TOÀN</span></div></div>
+    </section>
+
+    <section class="panel history-panel">
+      <div class="panel-heading"><div><div class="section-kicker">04 / LOCAL HISTORY</div><h2>Lịch sử gần đây</h2></div><button id="clearHistoryBtn" class="text-button">XÓA LỊCH SỬ</button></div>
+      <div id="historyList" class="history-list"><div class="empty-state"><span>◷</span><p>Chưa có lịch sử phân tích.</p></div></div>
+    </section>
+
+    <footer><div class="footer-brand">LINK<span class="accent">SCOPE</span></div><p>Công cụ phân tích URL độc lập, không liên kết hay được chứng thực bởi Link4m.</p><p>Hãy chỉ mở liên kết từ nguồn bạn tin tưởng.</p></footer>
+  </main>
+
+  <dialog id="infoDialog" class="info-dialog"><div class="dialog-head"><h2>Giới hạn phiên bản</h2><button id="closeDialog" class="icon-button" aria-label="Đóng">✕</button></div><p>Đây là website tĩnh chạy trên GitHub Pages. Nó kiểm tra cú pháp URL và thông tin hiển thị trong URL, nhưng không truy cập máy chủ của link rút gọn để tìm đích cuối.</p><p>Để kiểm tra chuyển hướng phía máy chủ cần backend có kiểm soát SSRF, giới hạn redirect và bảo vệ mạng nội bộ. CAPTCHA chỉ được người dùng tự hoàn tất trên website gốc.</p><button id="dialogOk" class="primary-button full-width">Đã hiểu</button></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="js/validator.js"></script><script src="js/history.js"></script><script src="js/app.js"></script>
+</body>
+</html>
