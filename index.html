@@ -1,71 +1,806 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090b14">
-  <meta name="description" content="Phân tích URL rút gọn, kiểm tra tên miền và mở trang xác minh trong trình duyệt.">
-  <title>LinkScope — Short Link Analyzer</title>
-  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#090610">
+<title>LinkScope — Neon Link Analyzer</title>
+
+<style>
+:root {
+  --bg: #090610;
+  --card: #151020;
+  --purple: #a66bff;
+  --pink: #e29aff;
+  --text: #f8f2ff;
+  --muted: #92859f;
+  --border: #38264e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at 50% 0%, #382052 0%, transparent 48%),
+    var(--bg);
+  font-family: system-ui, Arial, sans-serif;
+}
+
+button, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+header {
+  max-width: 520px;
+  margin: auto;
+  padding: 22px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ffffff10;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.logo span {
+  color: var(--purple);
+}
+
+.status {
+  color: #b7a0d1;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+main {
+  max-width: 520px;
+  margin: auto;
+  padding: 25px 16px 50px;
+}
+
+.hero {
+  text-align: center;
+  padding: 20px 0 28px;
+}
+
+.eyebrow {
+  color: var(--pink);
+  font-size: 10px;
+  letter-spacing: 2px;
+  font-weight: 800;
+}
+
+h1 {
+  font-size: clamp(38px, 10vw, 52px);
+  line-height: 1.06;
+  letter-spacing: -2px;
+  margin: 18px 0 12px;
+}
+
+h1 span {
+  color: var(--purple);
+  text-shadow: 0 0 28px #a66bff55;
+}
+
+.subtitle {
+  max-width: 330px;
+  margin: auto;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.card {
+  padding: 21px;
+  margin-bottom: 16px;
+  border-radius: 21px;
+  background: linear-gradient(145deg, #1b1328, #100c19);
+  border: 1px solid var(--border);
+  box-shadow: 0 15px 45px #0004;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.kicker {
+  color: var(--purple);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+h2 {
+  margin: 5px 0 0;
+  font-size: 19px;
+}
+
+.badge {
+  color: #9eeac6;
+  border: 1px solid #9eeac633;
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 9px;
+}
+
+label {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 9px;
+}
+
+.input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #0a0710;
+  border: 1px solid #60417f;
+  border-radius: 13px;
+  padding: 6px 8px 6px 12px;
+}
+
+.input-wrap:focus-within {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px #a66bff18;
+}
+
+.input-wrap input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: white;
+  padding: 10px 0;
+  font-size: 12px;
+}
+
+.input-wrap input::placeholder {
+  color: #695a79;
+}
+
+.paste {
+  border: 1px solid #563777;
+  background: #251635;
+  color: #d6b5ff;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 10px;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  color: #756782;
+  font-size: 9px;
+  margin: 9px 1px 17px;
+}
+
+.primary {
+  width: 100%;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid #d6aaff44;
+  border-radius: 13px;
+  background: linear-gradient(110deg, #914fe1, #6734ae);
+  color: white;
+  box-shadow: 0 8px 25px #873edc35;
+  text-align: left;
+}
+
+.primary:active {
+  transform: scale(.99);
+}
+
+.primary .symbol {
+  font-size: 25px;
+}
+
+.primary .button-text {
+  flex: 1;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.primary small {
+  display: block;
+  margin-top: 3px;
+  color: #e4ccff;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.arrow {
+  font-size: 21px;
+}
+
+.clear {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  padding: 13px;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.privacy {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border-top: 1px solid #ffffff0d;
+  padding-top: 14px;
+  margin-top: 6px;
+}
+
+.privacy-icon {
+  color: #82e4b5;
+  font-size: 22px;
+}
+
+.privacy strong,
+.privacy small {
+  display: block;
+}
+
+.privacy strong {
+  font-size: 11px;
+}
+
+.privacy small {
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 3px;
+}
+
+.error {
+  color: #ff9baa;
+  background: #ff617b0d;
+  border: 1px solid #ff617b44;
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+.result-host {
+  background: #0b0811;
+  border: 1px solid #ffffff12;
+  border-radius: 13px;
+  padding: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.host-icon {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: #a66bff19;
+  border-radius: 12px;
+  font-size: 23px;
+  color: var(--pink);
+}
+
+.host-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.host-info small {
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+.host-info strong {
+  display: block;
+  overflow-wrap: anywhere;
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.stat {
+  padding: 12px 9px;
+  background: #ffffff04;
+  border: 1px solid #ffffff0c;
+  border-radius: 10px;
+}
+
+.stat small {
+  color: var(--muted);
+  display: block;
+  font-size: 8px;
+}
+
+.stat strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.notice {
+  margin: 13px 0;
+  padding: 12px;
+  border: 1px solid #e4b36b30;
+  border-radius: 11px;
+  color: #d5c4a5;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.secondary {
+  width: 100%;
+  border: 1px solid #68438e;
+  background: #a66bff0d;
+  color: #d8bbff;
+  border-radius: 11px;
+  padding: 12px;
+  margin-top: 9px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.section-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid #ffffff0d;
+}
+
+.section-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.check {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: #a66bff14;
+  border-radius: 9px;
+  color: var(--pink);
+}
+
+.section-row strong {
+  display: block;
+  font-size: 12px;
+}
+
+.section-row small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 3px;
+}
+
+.history-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #ffffff0d;
+  overflow-wrap: anywhere;
+}
+
+.history-item:last-child {
+  border: none;
+}
+
+.history-item strong {
+  font-size: 12px;
+}
+
+.history-item small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 4px;
+}
+
+.history-item button {
+  margin-top: 8px;
+  border: 1px solid #68438e;
+  background: #a66bff0d;
+  color: #d8bbff;
+  padding: 7px 10px;
+  border-radius: 7px;
+  font-size: 10px;
+}
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 15px 0;
+}
+
+footer {
+  text-align: center;
+  color: #74677f;
+  font-size: 10px;
+  padding: 20px 0;
+  line-height: 1.8;
+}
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translate(-50%, 15px);
+  opacity: 0;
+  pointer-events: none;
+  background: #281a39;
+  border: 1px solid #68438e;
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: white;
+  font-size: 12px;
+  transition: .2s;
+  max-width: 90%;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 360px) {
+  main { padding-left: 11px; padding-right: 11px; }
+  .card { padding: 16px; }
+  h1 { font-size: 38px; }
+}
+</style>
 </head>
+
 <body>
-  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
-  <header class="topbar">
-    <a class="brand" href="./" aria-label="LinkScope trang chủ">
-      <span class="brand-mark">↗</span><span>LINK<span class="accent">SCOPE</span></span>
-    </a>
-    <div class="top-actions"><span class="status-dot"></span><span>URL ANALYZER</span><button id="themeHint" class="icon-button" title="Thông tin">ⓘ</button></div>
-  </header>
+<header>
+  <div class="logo">LINK<span>SCOPE</span></div>
+  <div class="status">● NEON URL LAB</div>
+</header>
 
-  <main class="shell">
-    <section class="hero">
-      <div class="eyebrow"><span class="eyebrow-line"></span> SHORT LINK INTELLIGENCE</div>
-      <h1>Nhìn rõ phía sau<br><span class="gradient-text">một đường link.</span></h1>
-      <p class="hero-copy">Kiểm tra cấu trúc URL, xem thông tin tên miền và mở trang đích trong trình duyệt để tự hoàn tất các bước xác minh mà dịch vụ yêu cầu.</p>
-    </section>
+<main>
+  <section class="hero">
+    <div class="eyebrow">✦ SHORT LINK INTELLIGENCE</div>
+    <h1>Decode the<br><span>unknown link.</span></h1>
+    <p class="subtitle">Phân tích đường dẫn rút gọn, kiểm tra tên miền trước khi mở liên kết.</p>
+  </section>
 
-    <section class="panel input-panel" aria-labelledby="analyzeTitle">
-      <div class="panel-heading">
-        <div><div class="section-kicker">01 / INPUT</div><h2 id="analyzeTitle">Phân tích đường dẫn</h2></div>
-        <span class="pill"><span class="pill-dot"></span> CLIENT-SIDE</span>
+  <section class="card">
+    <div class="card-top">
+      <div>
+        <div class="kicker">01 — INPUT</div>
+        <h2>Link analyzer</h2>
       </div>
-      <label for="urlInput" class="field-label">URL cần kiểm tra</label>
-      <div class="input-wrap"><span class="input-symbol">⌁</span><input id="urlInput" type="url" inputmode="url" autocomplete="url" placeholder="https://link4m.com/your-link" spellcheck="false"><button id="pasteBtn" class="secondary-button">DÁN</button></div>
-      <div class="input-foot"><span>Chấp nhận URL http:// hoặc https://</span><span id="charCount">0 ký tự</span></div>
-      <div class="button-row"><button id="analyzeBtn" class="primary-button"><span>⌕</span> Phân tích URL <span class="button-arrow">↗</span></button><button id="clearBtn" class="secondary-button">XÓA</button></div>
-      <p class="privacy-note"><span>◈</span> URL được phân tích ngay trên thiết bị. Không có dịch vụ backend trong phiên bản GitHub Pages này.</p>
-      <div id="errorBox" class="message error-message" role="alert" hidden></div>
-    </section>
+      <span class="badge">● LOCAL MODE</span>
+    </div>
 
-    <section id="results" class="panel results-panel" hidden aria-live="polite">
-      <div class="panel-heading"><div><div class="section-kicker">02 / REPORT</div><h2>Kết quả phân tích</h2></div><span id="validBadge" class="result-badge">URL VALID</span></div>
-      <div class="domain-card"><div class="domain-icon">◎</div><div class="domain-info"><span class="muted-label">TÊN MIỀN</span><strong id="hostResult">—</strong><span id="protocolResult" class="small-muted">—</span></div><div id="secureTag" class="security-tag">—</div></div>
-      <div class="detail-grid">
-        <div class="detail-cell"><span class="muted-label">GIAO THỨC</span><strong id="schemeResult">—</strong></div>
-        <div class="detail-cell"><span class="muted-label">ĐỘ DÀI URL</span><strong id="lengthResult">—</strong></div>
-        <div class="detail-cell"><span class="muted-label">THAM SỐ</span><strong id="paramsResult">—</strong></div>
+    <label for="urlInput">DÁN ĐƯỜNG LINK CỦA BẠN</label>
+
+    <div class="input-wrap">
+      <span style="color:#c59aff;font-size:22px">↗</span>
+      <input id="urlInput" placeholder="https://link4m.net/..." autocomplete="url">
+      <button class="paste" id="pasteBtn">DÁN</button>
+    </div>
+
+    <div class="meta">
+      <span>HTTP / HTTPS</span>
+      <span id="count">0 ký tự</span>
+    </div>
+
+    <button class="primary" id="analyzeBtn">
+      <span class="symbol">⌕</span>
+      <span class="button-text">Phân tích URL<small>Kiểm tra cấu trúc và tên miền</small></span>
+      <span class="arrow">↗</span>
+    </button>
+
+    <button class="clear" id="clearBtn">✕ &nbsp; XÓA ĐƯỜNG LINK</button>
+
+    <div id="error" class="error" hidden></div>
+
+    <div class="privacy">
+      <span class="privacy-icon">◇</span>
+      <span><strong>Private by design</strong><small>URL được xử lý ngay trên thiết bị của bạn.</small></span>
+    </div>
+  </section>
+
+  <section class="card" id="results" hidden>
+    <div class="card-top">
+      <div>
+        <div class="kicker">02 — REPORT</div>
+        <h2>Kết quả phân tích</h2>
       </div>
-      <div class="notice"><span class="notice-icon">i</span><p><strong>Chưa xác minh đích đến.</strong> URL hợp lệ về cú pháp không đồng nghĩa với việc an toàn. GitHub Pages không thể đọc chuỗi chuyển hướng của mọi website do giới hạn trình duyệt (CORS).</p></div>
-      <div class="button-row result-actions"><button id="openBtn" class="primary-button">Mở link trong tab mới <span class="button-arrow">↗</span></button><button id="copyBtn" class="secondary-button">Sao chép URL</button></div>
-      <p class="small-muted">Nếu trang mở ra yêu cầu CAPTCHA, hãy tự xác minh trực tiếp tại trang đó. Công cụ không tự giải hoặc bỏ qua CAPTCHA.</p>
-    </section>
+      <span class="badge">URL VALID</span>
+    </div>
 
-    <section class="panel tips-panel">
-      <div class="panel-heading"><div><div class="section-kicker">03 / QUICK CHECKS</div><h2>Kiểm tra an toàn cơ bản</h2></div><span class="outline-icon">⌘</span></div>
-      <div class="checks-list" id="checksList"><div class="check-row"><span class="check-icon">✓</span><div><strong>Kiểm tra cú pháp URL</strong><p>Phát hiện URL thiếu giao thức hoặc không hợp lệ.</p></div><span class="check-state">SẴN SÀNG</span></div><div class="check-row"><span class="check-icon">✓</span><div><strong>Hiển thị hostname</strong><p>Giúp nhận diện tên miền trước khi mở liên kết.</p></div><span class="check-state">SẴN SÀNG</span></div><div class="check-row"><span class="check-icon warn">!</span><div><strong>Không tự động vượt xác minh</strong><p>CAPTCHA và bước chống bot vẫn do người dùng thực hiện.</p></div><span class="check-state">AN TOÀN</span></div></div>
-    </section>
+    <div class="result-host">
+      <div class="host-icon">◎</div>
+      <div class="host-info">
+        <small>TÊN MIỀN PHÁT HIỆN</small>
+        <strong id="hostname">—</strong>
+        <small id="protocol" style="display:block;margin-top:5px;overflow-wrap:anywhere">—</small>
+      </div>
+    </div>
 
-    <section class="panel history-panel">
-      <div class="panel-heading"><div><div class="section-kicker">04 / LOCAL HISTORY</div><h2>Lịch sử gần đây</h2></div><button id="clearHistoryBtn" class="text-button">XÓA LỊCH SỬ</button></div>
-      <div id="historyList" class="history-list"><div class="empty-state"><span>◷</span><p>Chưa có lịch sử phân tích.</p></div></div>
-    </section>
+    <div class="stats">
+      <div class="stat"><small>GIAO THỨC</small><strong id="scheme">—</strong></div>
+      <div class="stat"><small>ĐỘ DÀI URL</small><strong id="length">—</strong></div>
+      <div class="stat"><small>THAM SỐ</small><strong id="params">—</strong></div>
+    </div>
 
-    <footer><div class="footer-brand">LINK<span class="accent">SCOPE</span></div><p>Công cụ phân tích URL độc lập, không liên kết hay được chứng thực bởi Link4m.</p><p>Hãy chỉ mở liên kết từ nguồn bạn tin tưởng.</p></footer>
-  </main>
+    <div class="notice">
+      <strong>⚠ Chưa xác minh đích đến.</strong><br>
+      URL hợp lệ không có nghĩa là an toàn. Bản HTML tĩnh này không thể đọc mọi chuỗi chuyển hướng do giới hạn CORS.
+    </div>
 
-  <dialog id="infoDialog" class="info-dialog"><div class="dialog-head"><h2>Giới hạn phiên bản</h2><button id="closeDialog" class="icon-button" aria-label="Đóng">✕</button></div><p>Đây là website tĩnh chạy trên GitHub Pages. Nó kiểm tra cú pháp URL và thông tin hiển thị trong URL, nhưng không truy cập máy chủ của link rút gọn để tìm đích cuối.</p><p>Để kiểm tra chuyển hướng phía máy chủ cần backend có kiểm soát SSRF, giới hạn redirect và bảo vệ mạng nội bộ. CAPTCHA chỉ được người dùng tự hoàn tất trên website gốc.</p><button id="dialogOk" class="primary-button full-width">Đã hiểu</button></dialog>
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="js/validator.js"></script><script src="js/history.js"></script><script src="js/app.js"></script>
+    <button class="primary" id="openBtn">
+      <span class="symbol">↗</span>
+      <span class="button-text">Mở trang gốc<small>Tự hoàn tất CAPTCHA nếu được yêu cầu</small></span>
+      <span class="arrow">↗</span>
+    </button>
+
+    <button class="secondary" id="copyBtn">▣ &nbsp; SAO CHÉP URL</button>
+  </section>
+
+  <section class="card">
+    <div class="card-top">
+      <div>
+        <div class="kicker">03 — CHECKLIST</div>
+        <h2>Safety snapshot</h2>
+      </div>
+    </div>
+
+    <div class="section-row">
+      <span class="check">✓</span>
+      <div><strong>URL syntax</strong><small>Kiểm tra định dạng URL cơ bản.</small></div>
+    </div>
+    <div class="section-row">
+      <span class="check">✓</span>
+      <div><strong>Hostname visibility</strong><small>Xem tên miền trước khi truy cập.</small></div>
+    </div>
+    <div class="section-row">
+      <span class="check">!</span>
+      <div><strong>Human verification</strong><small>CAPTCHA do người dùng tự hoàn tất.</small></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-top">
+      <div>
+        <div class="kicker">04 — DEVICE</div>
+        <h2>Lịch sử gần đây</h2>
+      </div>
+      <button class="paste" id="clearHistory">XÓA</button>
+    </div>
+    <div id="history"><div class="empty">Chưa có link nào được phân tích.</div></div>
+  </section>
+
+  <footer>
+    <strong>LINKSCOPE · NEON URL LAB</strong><br>
+    Công cụ độc lập, không liên kết với Link4m.<br>
+    Chỉ mở liên kết từ nguồn bạn tin tưởng.
+  </footer>
+</main>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+let currentURL = "";
+let toastTimer;
+
+function notify(message) {
+  $("toast").textContent = message;
+  $("toast").classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $("toast").classList.remove("show"), 2200);
+}
+
+function validateURL(value) {
+  const raw = value.trim();
+
+  if (!raw) return { error: "Hãy dán một đường link trước." };
+  if (raw.length > 2048) return { error: "URL quá dài." };
+  if (/\s/.test(raw)) return { error: "URL chứa khoảng trắng không hợp lệ." };
+
+  let u;
+  try {
+    u = new URL(raw);
+  } catch {
+    return { error: "Link không hợp lệ. Hãy nhập đầy đủ https:// hoặc http://." };
+  }
+
+  if (!["http:", "https:"].includes(u.protocol)) {
+    return { error: "Chỉ hỗ trợ link HTTP hoặc HTTPS." };
+  }
+
+  if (!u.hostname || u.username || u.password) {
+    return { error: "Tên miền không hợp lệ hoặc URL chứa thông tin đăng nhập." };
+  }
+
+  return {
+    url: u.href,
+    hostname: u.hostname,
+    protocol: u.protocol,
+    params: Array.from(u.searchParams.keys()).length
+  };
+}
+
+function getHistory() {
+  try {
+    const value = JSON.parse(localStorage.getItem("linkscopeHistory") || "[]");
+    return Array.isArray(value) ? value : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveHistory(item) {
+  const items = getHistory().filter(x => x.url !== item.url);
+  items.unshift({ ...item, time: new Date().toLocaleString("vi-VN") });
+
+  try {
+    localStorage.setItem("linkscopeHistory", JSON.stringify(items.slice(0, 8)));
+  } catch {}
+
+  renderHistory();
+}
+
+function renderHistory() {
+  const items = getHistory();
+  const root = $("history");
+
+  if (!items.length) {
+    root.innerHTML = '<div class="empty">Chưa có link nào được phân tích.</div>';
+    return;
+  }
+
+  root.innerHTML = "";
+
+  items.forEach(item => {
+    const row = document.createElement("div");
+    row.className = "history-item";
+
+    const title = document.createElement("strong");
+    title.textContent = item.hostname;
+
+    const url = document.createElement("small");
+    url.textContent = item.url + " · " + item.time;
+
+    const button = document.createElement("button");
+    button.textContent = "NẠP LẠI";
+    button.onclick = () => {
+      $("urlInput").value = item.url;
+      updateCount();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    row.append(title, url, button);
+    root.appendChild(row);
+  });
+}
+
+function updateCount() {
+  $("count").textContent = $("urlInput").value.length + " ký tự";
+}
+
+$("urlInput").addEventListener("input", updateCount);
+
+$("urlInput").addEventListener("keydown", event => {
+  if (event.key === "Enter") analyze();
+});
+
+function analyze() {
+  $("error").hidden = true;
+
+  const result = validateURL($("urlInput").value);
+
+  if (result.error) {
+    $("results").hidden = true;
+    $("error").textContent = result.error;
+    $("error").hidden = false;
+    return;
+  }
+
+  currentURL = result.url;
+  $("hostname").textContent = result.hostname;
+  $("protocol").textContent = result.url;
+  $("scheme").textContent = result.protocol.replace(":", "").toUpperCase();
+  $("length").textContent = result.url.length + " ký tự";
+  $("params").textContent = result.params;
+
+  $("results").hidden = false;
+  saveHistory(result);
+
+  $("results").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
+$("analyzeBtn").addEventListener("click", analyze);
+
+$("clearBtn").addEventListener("click", () => {
+  $("urlInput").value = "";
+  $("results").hidden = true;
+  $("error").hidden = true;
+  updateCount();
+  $("urlInput").focus();
+});
+
+$("pasteBtn").addEventListener("click", async () => {
+  try {
+    $("urlInput").value = await navigator.clipboard.readText();
+    updateCount();
+    notify("Đã dán link.");
+  } catch {
+    notify("Hãy nhấn giữ ô nhập để dán link.");
+  }
+});
+
+$("openBtn").addEventListener("click", () => {
+  if (!currentURL) return;
+  window.open(currentURL, "_blank", "noopener,noreferrer");
+});
+
+$("copyBtn").addEventListener("click", async () => {
+  if (!currentURL) return;
+
+  try {
+    await navigator.clipboard.writeText(currentURL);
+    notify("Đã sao chép URL.");
+  } catch {
+    notify("Trình duyệt không cho phép sao chép tự động.");
+  }
+});
+
+$("clearHistory").addEventListener("click", () => {
+  localStorage.removeItem("linkscopeHistory");
+  renderHistory();
+  notify("Đã xóa lịch sử.");
+});
+
+renderHistory();
+updateCount();
+</script>
 </body>
-</html>
+  </html>
+  
